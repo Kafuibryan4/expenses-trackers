@@ -312,7 +312,7 @@ export default function EnhancedExpenseTracker() {
                 </Button>
               </>
             ) : (
-              <span className="font-bold text-indigo-700">${expense.amount.toFixed(2)}</span>
+              <span className="font-bold text-indigo-700">₵{expense.amount.toFixed(2)}</span>
             )}
           </div>
         </div>
@@ -484,7 +484,7 @@ export default function EnhancedExpenseTracker() {
             </Popover>
           </div>
           <div className="text-3xl font-bold text-indigo-800 animate-pulse">
-            Total: ${calculateTotal()}
+            Total: ₵{calculateTotal()}
           </div>
         </CardContent>
       </Card>
