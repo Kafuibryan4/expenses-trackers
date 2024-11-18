@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { format, startOfYear, endOfYear, startOfMonth, endOfMonth, startOfDay, endOfDay, subMonths, subYears } from 'date-fns'
 import { CalendarIcon, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -16,12 +16,25 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import ExpenseForm from './ExpenseForm'
 import ExpenseList from './ExpenseList'
 
+interface ChartDataPoint {
+  date: string
+  current: number
+  previous: number
+}
+
+interface Expense {
+  id: number
+  amount: number
+  category: string
+  date: string | Date
+}
+
 export default function EnhancedExpenseTracker() {
-  const [expenses, setExpenses] = useState(() => {
+  const [expenses, setExpenses] = useState<Expense[]>(() => {
     const savedExpenses = localStorage.getItem('expenses')
     return savedExpenses ? JSON.parse(savedExpenses) : []
   })
-  const [editingId, setEditingId] = useState(null)
+  const [editingId, setEditingId] = useState<number | null>(null)
   const [totalTimeFrame, setTotalTimeFrame] = useState('day')
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [showAlert, setShowAlert] = useState(false)
@@ -102,11 +115,12 @@ export default function EnhancedExpenseTracker() {
     })
   }
 
-  const getChartData = () => {
+  const getChartData = (): ChartDataPoint[] => {
     const currentPeriodExpenses = getFilteredExpenses()
     const previousPeriodExpenses = getPreviousPeriodExpenses()
 
-    const data = {}
+    const data: Record<string, { current: number; previous: number }> = {}
+    
     currentPeriodExpenses.forEach((expense) => {
       const date = format(new Date(expense.date), 'yyyy-MM-dd')
       if (data[date]) {
